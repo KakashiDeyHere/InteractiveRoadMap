@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Mobile viewport + safe areas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+  <title>Interactive Roadmap 2026</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#0066cc" />
+
+  <!-- iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Roadmap 2026">
+
+  <!-- iOS App Icons -->
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="container" role="main">
+    <h1 id="app-title">📅 2026 Interactive Roadmap</h1>
+
+    <!-- Vision Section -->
+    <section id="vision-section" aria-labelledby="vision-heading">
+      <h2 id="vision-heading">🌟 2026 Vision & Priorities</h2>
+
+      <label for="vision">Vision Statement:</label>
+      <textarea
+        id="vision"
+        placeholder="What does success look like for you in 2026?"
+        aria-label="Vision Statement">
+      </textarea>
+
+      <label for="priority-1">Top 3 Priorities:</label>
+      <ul id="priority-list" role="list">
+        <li><input type="text" id="priority-1" placeholder="Priority #1" aria-label="Priority 1"></li>
+        <li><input type="text" id="priority-2" placeholder="Priority #2" aria-label="Priority 2"></li>
+        <li><input type="text" id="priority-3" placeholder="Priority #3" aria-label="Priority 3"></li>
+      </ul>
+    </section>
+
+    <!-- Quarter Selector -->
+    <nav class="quarter-selector" aria-label="Quarter navigation">
+      <button onclick="loadQuarter('Q1')" aria-label="Load goals for Quarter 1">Q1</button>
+      <button onclick="loadQuarter('Q2')" aria-label="Load goals for Quarter 2">Q2</button>
+      <button onclick="loadQuarter('Q3')" aria-label="Load goals for Quarter 3">Q3</button>
+      <button onclick="loadQuarter('Q4')" aria-label="Load goals for Quarter 4">Q4</button>
+    </nav>
+
+    <!-- Milestones -->
+    <section id="milestones" role="region" aria-labelledby="milestone-title">
+      <h2 id="milestone-title">Milestone Goals Area</h2>
+      <p>Select a quarter to view goals.</p>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" aria-labelledby="dashboard-title">
+      <h2 id="dashboard-title">📊 Dashboard</h2>
+
+      <div id="progress-bar"
+           role="progressbar"
+           aria-valuemin="0"
+           aria-valuemax="100"
+           aria-valuenow="0"
+           aria-label="Overall progress toward 2026 roadmap goals">
+        <div id="progress-fill"></div>
+      </div>
+
+      <ul id="progress-summary" role="list">
+        <!-- JS will populate this -->
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
