@@ -322,3 +322,8 @@ input, textarea, button {
   width: device-width;
   initial-scale: 1.0;
 }
+#goalChart {
+  max-width: 300px;
+  margin: 0 auto 1rem;
+  display: block;
+}

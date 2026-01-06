@@ -1,57 +1,54 @@
-// Starting point: Dynamic, editable, cloud-ready roadmap app
-// This file includes:
-// ✅ Editable goals/subtasks
-// ✅ LocalStorage persistence
-// ✅ Export/import support (JSON)
-// ✅ Dashboard summary
+// interactive-roadmap-2026/script.js
 
 /*************************************************
- * DATA LAYER (LocalStorage + Sync Ready)
+ * DATA LAYER
  *************************************************/
 
 const STORAGE_KEY = "milestonesData";
+const USER_KEY = "roadmapUser";
 
 function getMilestonesData() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const user = localStorage.getItem(USER_KEY) || "default";
+  const saved = localStorage.getItem(`${STORAGE_KEY}-${user}`);
   return saved ? JSON.parse(saved) : { Q1: [], Q2: [], Q3: [], Q4: [] };
 }
 
 function saveMilestonesData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const user = localStorage.getItem(USER_KEY) || "default";
+  localStorage.setItem(`${STORAGE_KEY}-${user}`, JSON.stringify(data));
+  showSaveConfirmation();
+}
+
+function showSaveConfirmation() {
+  const btn = document.getElementById("save-button");
+  if (!btn) return;
+  btn.textContent = "✅ Saved!";
+  setTimeout(() => (btn.textContent = "💾 Save Progress"), 2000);
 }
 
 /*************************************************
- * INITIALIZATION
+ * INIT
  *************************************************/
 
+let activeQuarter = null;
+let goalChartInstance = null;
+
 function initApp() {
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    saveMilestonesData({ Q1: [], Q2: [], Q3: [], Q4: [] });
-  }
-  renderQuarterButtons();
+  if (!localStorage.getItem(USER_KEY)) localStorage.setItem(USER_KEY, "default");
+  loadQuarter("Q1");
   updateDashboard();
   renderExportImportButtons();
+  document.getElementById("save-button")?.addEventListener("click", () => {
+    const data = getMilestonesData();
+    saveMilestonesData(data);
+  });
 }
 
 window.addEventListener("DOMContentLoaded", initApp);
 
 /*************************************************
- * UI STATE + Quarter Selector
+ * UI STATE + GOALS
  *************************************************/
-
-let activeQuarter = null;
-
-function renderQuarterButtons() {
-  const quarters = ["Q1", "Q2", "Q3", "Q4"];
-  const container = document.querySelector(".quarter-selector");
-  container.innerHTML = "";
-  quarters.forEach(q => {
-    const btn = document.createElement("button");
-    btn.textContent = q;
-    btn.onclick = () => loadQuarter(q);
-    container.appendChild(btn);
-  });
-}
 
 function setActiveQuarterButton(quarter) {
   activeQuarter = quarter;
@@ -60,30 +57,20 @@ function setActiveQuarterButton(quarter) {
   });
 }
 
-/*************************************************
- * RENDERING GOALS + FORM
- *************************************************/
-
 function loadQuarter(quarter) {
   setActiveQuarterButton(quarter);
   const data = getMilestonesData();
   const container = document.getElementById("milestones");
   container.innerHTML = `<h2>${quarter} Goals</h2>`;
-
-  data[quarter].forEach((goal, goalIndex) => {
-    renderGoal(container, quarter, goal, goalIndex);
-  });
-
+  data[quarter].forEach((goal, goalIndex) => renderGoal(container, quarter, goal, goalIndex));
   renderAddGoalForm(container, quarter);
   updateDashboard();
 }
 
 function renderGoal(container, quarter, goal, goalIndex) {
-  const goalId = `${quarter}-goal-${goalIndex}`;
   const goalDiv = document.createElement("div");
   goalDiv.className = "milestone";
 
-  // Editable title
   const titleInput = document.createElement("input");
   titleInput.value = goal.title;
   titleInput.onchange = () => {
@@ -92,19 +79,16 @@ function renderGoal(container, quarter, goal, goalIndex) {
     saveMilestonesData(data);
   };
 
-  // Delete button
-const deleteBtn = document.createElement("button");
-deleteBtn.textContent = "🗑";
-deleteBtn.setAttribute("aria-label", "Delete goal"); // ✅ Add this line
-deleteBtn.onclick = () => {
-  if (confirm("Delete this goal?")) {
-    const data = getMilestonesData();
-    data[quarter].splice(goalIndex, 1);
-    saveMilestonesData(data);
-    loadQuarter(quarter);
-  }
-};
-
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "🗑";
+  deleteBtn.onclick = () => {
+    if (confirm("Delete this goal?")) {
+      const data = getMilestonesData();
+      data[quarter].splice(goalIndex, 1);
+      saveMilestonesData(data);
+      loadQuarter(quarter);
+    }
+  };
 
   const header = document.createElement("div");
   header.className = "goal-header";
@@ -133,7 +117,6 @@ deleteBtn.onclick = () => {
     subtaskList.appendChild(subLi);
   });
 
-  // Add new subtask
   const addSub = document.createElement("button");
   addSub.textContent = "+ Add Subtask";
   addSub.onclick = () => {
@@ -168,47 +151,71 @@ function renderAddGoalForm(container, quarter) {
 }
 
 /*************************************************
- * STORAGE HELPERS
+ * SUBTASK STATE
  *************************************************/
 
 function isSubtaskComplete(q, g, s) {
-  return localStorage.getItem(`${q}-goal-${g}-sub-${s}`) === "true";
+  const user = localStorage.getItem(USER_KEY) || "default";
+  return localStorage.getItem(`${user}-${q}-goal-${g}-sub-${s}`) === "true";
 }
 
 function setSubtaskCompletion(q, g, s, value) {
-  localStorage.setItem(`${q}-goal-${g}-sub-${s}`, value);
+  const user = localStorage.getItem(USER_KEY) || "default";
+  localStorage.setItem(`${user}-${q}-goal-${g}-sub-${s}` , value);
 }
 
 /*************************************************
- * DASHBOARD
+ * DASHBOARD + CHART
  *************************************************/
 
 function updateDashboard() {
   const data = getMilestonesData();
   const summary = document.getElementById("progress-summary");
-  const fill = document.getElementById("progress-fill");
 
-  summary.innerHTML = "";
-  let totalSubs = 0, completedSubs = 0;
+  let total = 0;
+  let complete = 0;
 
-  for (const [quarter, goals] of Object.entries(data)) {
-    goals.forEach((goal, gIndex) => {
-      goal.subtasks.forEach((_, sIndex) => {
-        totalSubs++;
-        if (isSubtaskComplete(quarter, gIndex, sIndex)) completedSubs++;
+  for (const [q, goals] of Object.entries(data)) {
+    goals.forEach((g, gi) => {
+      g.subtasks.forEach((_, si) => {
+        total++;
+        if (isSubtaskComplete(q, gi, si)) complete++;
       });
     });
   }
 
-  const percent = totalSubs > 0 ? Math.round((completedSubs / totalSubs) * 100) : 0;
-  fill.style.width = `${percent}%`;
-  document.getElementById("progress-bar").setAttribute("aria-valuenow", percent);
+  const percent = total > 0 ? Math.round((complete / total) * 100) : 0;
+  summary.textContent = `${complete} of ${total} subtasks complete (${percent}%)`;
 
-  summary.textContent = `${completedSubs} of ${totalSubs} subtasks complete (${percent}%)`;
+  const ctx = document.getElementById("goalChart").getContext("2d");
+  const chartData = {
+    labels: ["Completed", "Remaining"],
+    datasets: [{
+      data: [complete, total - complete],
+      backgroundColor: ["#4caf50", "#ccc"]
+    }]
+  };
+
+  if (goalChartInstance) {
+    goalChartInstance.data = chartData;
+    goalChartInstance.update();
+  } else {
+    goalChartInstance = new Chart(ctx, {
+      type: "doughnut",
+      data: chartData,
+      options: {
+        cutout: "70%",
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        }
+      }
+    });
+  }
 }
 
 /*************************************************
- * EXPORT / IMPORT SUPPORT
+ * EXPORT / IMPORT
  *************************************************/
 
 function renderExportImportButtons() {
@@ -232,13 +239,13 @@ function renderExportImportButtons() {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = event => {
+    reader.onload = evt => {
       try {
-        const imported = JSON.parse(event.target.result);
+        const imported = JSON.parse(evt.target.result);
         saveMilestonesData(imported);
         loadQuarter(activeQuarter || "Q1");
         updateDashboard();
-      } catch (err) {
+      } catch {
         alert("Invalid JSON file.");
       }
     };
@@ -247,9 +254,14 @@ function renderExportImportButtons() {
 
   dashboard.append(exportBtn, importInput);
 }
+
+/*************************************************
+ * PWA Service Worker
+ *************************************************/
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
-    .register('./service-worker.js') // 👈 include ./ for relative path
+    .register('./service-worker.js')
     .then(() => console.log("✅ Service Worker registered"))
     .catch(err => console.error("❌ Service Worker error", err));
 }
