@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Fitness Challenge</title>
+  <style>
+    :root {
+      --bg: #f7f6fb;
+      --text: #1e1b2e;
+      --muted: #635f70;
+      --accent: #7c3aed;
+      --card: #ffffff;
+      --border: #e6e3f0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14111f;
+        --text: #f2f0f7;
+        --muted: #a7a1b8;
+        --accent: #a78bfa;
+        --card: #1c1830;
+        --border: #2c2740;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.65;
+    }
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin: 0 0 4px;
+    }
+    .updated {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0 0 28px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin: 32px 0 10px;
+      color: var(--accent);
+    }
+    p, li { color: var(--text); }
+    ul { padding-left: 22px; }
+    a { color: var(--accent); }
+    .contact {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>Privacy Policy for Fitness Challenge</h1>
+      <p class="updated">Last updated: August 25, 2026</p>
+
+      <p>Fitness Challenge ("the app") is a personal fitness tracking app that helps you log daily
+      workouts, weight, and running mileage. This policy explains what data the app collects, how it's
+      used, and your choices.</p>
+
+      <h2>Data we collect</h2>
+      <p><strong>If you don't create an account:</strong> the app collects no personal data at all.
+      Everything you enter (workouts, weight, mileage) stays only on your device, in local app storage.
+      We have no visibility into it and it is never transmitted anywhere.</p>
+
+      <p><strong>If you choose to create an account</strong> (email/password, Google, or Apple sign-in),
+      we collect:</p>
+      <ul>
+        <li><strong>Email address</strong> — used only to identify your account and let you sign in on
+        other devices.</li>
+        <li><strong>Fitness data you enter</strong> — workout completions, streaks, tier/level, weight
+        log entries, and mileage log entries. This is the same data described above, now also stored in
+        the cloud (Google Firebase) so it can sync across your devices and survive an app reinstall.</li>
+      </ul>
+      <p>We do not collect your location, contacts, photos, device identifiers for advertising, or any
+      data beyond what's listed above.</p>
+
+      <h2>How we use this data</h2>
+      <p>Solely to provide the app's core function: syncing your own fitness data across your own
+      signed-in devices. We do not use your data for advertising, do not build behavioral profiles, and
+      do not sell or share it with third parties.</p>
+
+      <h2>Third-party services</h2>
+      <p>We use <strong>Google Firebase</strong> (Authentication and Firestore database) to store
+      account and sync data. Firebase is Google's backend infrastructure; your data is subject to
+      <a href="https://policies.google.com/privacy">Google's Privacy Policy</a> as the infrastructure
+      provider, but is only accessed by this app on your behalf — we do not grant any other party access
+      to it.</p>
+      <p>If you sign in with Google or Apple, those companies handle the authentication itself; we only
+      receive your email address and a unique identifier to associate your account with your data — we
+      never see or store your Google/Apple password.</p>
+
+      <h2>Data security</h2>
+      <p>Cloud-stored data is protected by Firebase security rules that restrict access so that only
+      your own signed-in account can read or write your data — no other user, including us, can access
+      it.</p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li><strong>Don't want an account?</strong> Skip sign-in entirely — the app works fully offline
+        with local-only storage.</li>
+        <li><strong>Want to delete your data?</strong> Sign in, then tap <strong>Delete My Account</strong>
+        in the Sync Your Progress card. This permanently deletes your cloud data and your account itself
+        — it cannot be undone. Data already saved locally on your device is unaffected and remains until
+        you separately use Settings → Reset All Data, or uninstall the app.</li>
+        <li><strong>Want to stop syncing?</strong> Sign out at any time; your data remains in the cloud
+        for when you sign back in, but the app continues working locally without it.</li>
+      </ul>
+
+      <h2>Children's privacy</h2>
+      <p>This app is not directed at children under 13, and we do not knowingly collect data from
+      children under 13.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If this policy changes, the "Last updated" date above will be revised. Continued use of the app
+      after a change constitutes acceptance of the updated policy.</p>
+
+      <p class="contact">Questions about this policy or your data can be sent to:
+      <strong>jtaylor370@yahoo.com</strong></p>
+    </div>
+  </main>
+</body>
+</html>
